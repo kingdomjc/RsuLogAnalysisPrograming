@@ -66,6 +66,10 @@ class DeductCostEntity:
 
 
 if __name__ == "__main__":
-    source = [0, 1, 2, 3]
-    a = source[1:3]
-    print a[0]
+    entity = DeductCostEntity()
+    entity.setTime("2019-08-21 00:00:14.546")
+    unit = 3600 * 24
+    date_stamp = (entity.getTime() - ((entity.getTime() + (8 * 3600)) % unit))
+    timeArray = localtime(date_stamp)
+    otherStyleTime = strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    print otherStyleTime

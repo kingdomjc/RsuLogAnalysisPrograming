@@ -122,6 +122,8 @@ class AnalysisLog:
             self.carMode[a.getCarModel()] = self.carMode.get(a.getCarModel()) + 1
 
     def __filter(self, source):
-        index = self.__twoPointLookup(source, source[0].getTime() + self.logTimeDiff)
+        unit = 3600 * 24
+        date_stamp = (source[0].getTime() - ((source[0].getTime() + (8 * 3600)) % unit))
+        index = self.__twoPointLookup(source, date_stamp + self.logTimeDiff)
         self.manualDetection = source[0:index]
         return source[index:len(source)]
