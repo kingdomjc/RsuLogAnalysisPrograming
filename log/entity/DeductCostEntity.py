@@ -7,7 +7,7 @@ class DeductCostEntity:
         self.__time = None
         self.__obuId = None
         self.__carModel = None
-        self.__status = None
+        self.__status = 0
         self.__errorInfo = None
 
     def setTime(self, time):
@@ -58,6 +58,12 @@ class DeductCostEntity:
         else:
             return ""
 
+    def __hash__(self):
+        return self.getTime()
+
+    def __eq__(self, other):
+        return self.getTime() == other.getTime()
+
     def __str__(self):
         timeArray = localtime(self.getTime())
         otherStyleTime = strftime("%Y-%m-%d %H:%M:%S", timeArray)
@@ -68,8 +74,4 @@ class DeductCostEntity:
 if __name__ == "__main__":
     entity = DeductCostEntity()
     entity.setTime("2019-08-21 00:00:14.546")
-    unit = 3600 * 24
-    date_stamp = (entity.getTime() - ((entity.getTime() + (8 * 3600)) % unit))
-    timeArray = localtime(date_stamp)
-    otherStyleTime = strftime("%Y-%m-%d %H:%M:%S", timeArray)
-    print otherStyleTime
+    print entity.getTime()

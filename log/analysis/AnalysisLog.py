@@ -15,7 +15,9 @@ class AnalysisLog:
         self.total = None
         # 成功的数目
         self.successNum = 0
-        # 没有成功的
+        # 源文件中没有成功的
+        self.NoSuccessSor = []
+        # 找到但是没有成功的
         self.NoSuccess = {}
         # 车型统计
         self.carMode = {}
@@ -54,17 +56,21 @@ class AnalysisLog:
 
     def calculating(self, window, source, checked):
         bar = 0
-        self.total = len(source)
-        source = self.__filter(source)
+        source = self.__filter2(self.__filter(source))
         for a in source:
-            start = a.getTime() - self.logTimeDiff
-            end = a.getTime() + self.logTimeDiff
-            self.__setCarModel(a)
-            tChecked = self.__slitByTime(checked, start, end, a)
-            self.__success(tChecked)
-            self.__noSuccess(tChecked)
+            if a.getStatus() is 1:
+                start = a.getTime() - self.logTimeDiff
+                end = a.getTime() + self.logTimeDiff
+                self.__setCarModel(a)
+                tChecked = self.__slitByTime(checked, start, end, a)
+                self.__success(tChecked)
+                self.__noSuccess(tChecked)
+            else:
+                self.NoSuccessSor.append(a)
+            print a
             bar += 1
             window.setProgressValue(float(bar) / len(source) * 100)
+        self.total = len(source) - len(self.NoSuccessSor)
         return self
 
     def __success(self, tChecked):
@@ -127,3 +133,17 @@ class AnalysisLog:
         index = self.__twoPointLookup(source, date_stamp + self.logTimeDiff)
         self.manualDetection = source[0:index]
         return source[index:len(source)]
+
+    def __filter2(self, source):
+        sourceF = [source[0]]
+        for j in range(1, len(source), 1):
+            a = source[j]
+            if sourceF[len(sourceF)-1].getObuId() == a.getObuId():
+                print sourceF[len(sourceF)-1].getTime() - a.getTime()
+                if not abs(sourceF[len(sourceF)-1].getTime() - a.getTime()) < self.logTimeDiff:
+                    sourceF.append(a)
+                else:
+                    sourceF[len(sourceF) - 1].setStatus(a.getStatus())
+            else:
+                sourceF.append(a)
+        return sourceF

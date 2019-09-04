@@ -23,7 +23,11 @@ class ResultFormat:
         target.textBrowser.append("*" * 80)
         target.textBrowser.append(u"    正确率：" + str(float(analysis.findNum) / analysis.total))
         target.textBrowser.append("*" * 80)
-        target.textBrowser.append(u"  未正确的：")
+        target.textBrowser.append(u"  源文件未正确的：")
+        for key in analysis.NoSuccessSor:
+            target.textBrowser.append(str(key))
+        target.textBrowser.append("*" * 80)
+        target.textBrowser.append(u"  找到但是未正确的：")
         for key in analysis.NoFind:
             target.textBrowser.append(str(key))
         target.textBrowser.append("*" * 80)

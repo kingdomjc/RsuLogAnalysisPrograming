@@ -27,16 +27,20 @@ class ContentFormat:
         for s in content:
             if re.search(self.regex[0], s) is not None:
                 aData = DeductCostEntity()
-                for j in range(i, i - 13, -1):
-                    line = re.search(self.regex[1], content[j])
-                    if line is not None:
-                        usefulContent = line.group()
-                        aData.setTime(usefulContent[0:23])
-                        aData.setObuId(usefulContent.split(self.regex[2])[1].split(self.regex[3])[0])
-                        break
-                    elif re.search(self.regex[4], content[j]) is not None:
-                        aData.setCarModel(content[j].split(self.regex[5])[1].split(self.regex[3])[0])
-                self.__content.append(aData)
+                for j in range(i + 14, i - 13, -1):
+                    if j <= i:
+                        line = re.search(self.regex[1], content[j])
+                        if line is not None:
+                            usefulContent = line.group()
+                            aData.setTime(usefulContent[0:23])
+                            aData.setObuId(usefulContent.split(self.regex[2])[1].split(self.regex[3])[0])
+                            break
+                        elif re.search(self.regex[4], content[j]) is not None:
+                            aData.setCarModel(content[j].split(self.regex[5])[1].split(self.regex[3])[0])
+                    elif re.search(self.regex[7], content[j]) is not None:
+                        aData.setStatus(1)
+                if not self.__content.__contains__(aData):
+                    self.__content.append(aData)
             i = i + 1
         window.setProgressValue((i / len(content)) * 100)
         return self.__content
